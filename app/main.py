@@ -1,18 +1,27 @@
 import pickle
 import requests
 from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
 import os
 
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],  
+    allow_methods=['*'],  
+    allow_headers=['*']   
+)
 
 @app.post("/api/brandofcar")
 async def read_image(image: Request):
 
-    url_genHog = 'http://localhost:8080/api/genhog/'
+    url_genHog = 'http://172.17.0.2:80/api/genhog/'
     
-    file_model_path = "..\model\ClassifierCarModel.pkl"
+    file_model_path = r"/model/ClassifierCarModel.pkl"
    
-    with open(file_model_path, "rb") as file:
+    with open(os.getcwd()+file_model_path, "rb") as file:
         carPredictor = pickle.load(file) # อ่าน model ที่ได้ทำการเรียนรู้ไว้
     
     # carPredictor = pickle.load(open(os.getcwd()+'ClassifierCarModel.pkl', 'rb')) 
